@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -19,6 +20,7 @@ class NotifActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNotifBinding
     private val channelId = "TEST_NOTIF"
+    private val notifId = 90
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,20 +74,34 @@ class NotifActivity : AppCompatActivity() {
                 )
                 with(notifManager) {
                     createNotificationChannel(notifChannel)
-//                    notify(0, builder.build())
                 }
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                    notifManager.notify(0, builder.build())
+                    notifManager.notify(notifId, builder.build())
                 } else {
                     requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
                 }
             } else {
-                notifManager.notify(0, builder.build())
+                notifManager.notify(notifId, builder.build())
             }
 
+        }
+
+        binding.btnUpdate.setOnClickListener {
+            val notifImage = BitmapFactory.decodeResource(resources, R.drawable.icon)
+            val builder = NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.baseline_notifications_24)
+                .setContentTitle("Notifku")
+                .setContentText("Ini update notifikasi")
+                .setStyle(
+                    NotificationCompat.BigPictureStyle()
+                        .bigPicture(notifImage)
+                )
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            notifManager.notify(notifId, builder.build())
         }
     }
 }
