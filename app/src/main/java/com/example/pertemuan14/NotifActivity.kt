@@ -37,22 +37,31 @@ class NotifActivity : AppCompatActivity() {
                 0
             }
 
-            val intent = Intent(this@NotifActivity, NotifReceiver::class.java). putExtra("MESSAGE", "Baca selengekapnya....")
+            val intent = Intent(this, NotifActivity::class.java)
+            val intent2 = Intent(this@NotifActivity, NotifReceiver::class.java). putExtra("MESSAGE", "Baca selengekapnya....")
 
-            val pendingIntent = PendingIntent.getBroadcast(
+            val pendingIntent = PendingIntent.getActivity(
                 this,
                 0,
                 intent,
                 flag
             )
 
-            val builder = NotificationCompat.Builder(this, channelId)
+            val pendingIntent2 = PendingIntent.getBroadcast(
+                this,
+                1,
+                intent2,
+                flag
+            )
+
+            val builder = NotificationCompat.Builder(this@NotifActivity, channelId)
                 .setSmallIcon(R.drawable.baseline_notifications_24)
                 .setContentTitle("Notifku")
                 .setContentText("Hello World!") //isi pesan bebas
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .addAction(0, "Baca notif", pendingIntent)
+                .setContentIntent(pendingIntent)
+                .addAction(0, "Baca notif", pendingIntent2)
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
